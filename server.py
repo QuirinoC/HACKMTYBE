@@ -4,6 +4,7 @@ from flask import Flask, jsonify, make_response, request, render_template, Respo
 
 from flask_cors import CORS
 
+from predictor import predict
 
 #Flask stuff
 app = Flask(__name__)
@@ -16,6 +17,26 @@ def index():
         "method" : "post", 
         "message" : "post an image"
     }})
+
 @app.route('/classifier', methods=['POST'])
 def classifier():
-    return "HACKMTY"
+
+    req = request.form or request.json
+
+    img = request.files['image']
+
+    if not req:
+        return jsonify({
+            "status" : "error",
+            "message" : "body not found in request"
+        })
+
+    tag, confidence = predict(img)
+
+    return jsonify(
+        {
+        "image" : img.filename,
+        "tag" : tag,
+        "confidence" : confidence
+        }
+    )
