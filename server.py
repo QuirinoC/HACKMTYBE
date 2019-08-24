@@ -10,6 +10,12 @@ app = Flask(__name__)
 CORS(app)
 app.config['MONGODB_SETTINGS'] = {'db':'gorditos', 'alias':'default'}
 
+@app.route("/", methods=['GET'])
+def index():
+    return jsonify({"usage": {
+        "method" : "post", 
+        "message" : "post an image"
+    }})
 @app.route('/classifier', methods=['POST'])
 def classifier():
     return "HACKMTY"
