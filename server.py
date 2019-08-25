@@ -9,7 +9,6 @@ from predictor import predict
 #Flask stuff
 app = Flask(__name__)
 CORS(app)
-app.config['MONGODB_SETTINGS'] = {'db':'gorditos', 'alias':'default'}
 
 @app.route("/", methods=['GET'])
 def index():
