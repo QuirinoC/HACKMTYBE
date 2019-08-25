@@ -29,8 +29,8 @@ def classifier():
             "status" : "error",
             "message" : "Image not found in request"
         })
-
-    tag, confidence = predict(img)
+    img.save(img.filename)
+    tag, confidence = predict(img.filename)
 
     return jsonify(
         {

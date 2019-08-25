@@ -6,6 +6,10 @@ from selenium import webdriver
 from selenium.webdriver import ChromeOptions, Chrome
 from selenium.common.exceptions import NoSuchElementException
 
+import asyncio
+
+import urllib.request 
+
 
 
 class Browser(Chrome):
@@ -20,7 +24,9 @@ class Browser(Chrome):
 
 driver = Browser(executable_path="/Users/Quirino/Desktop/hackmty/HACKMTYBE/chromedriver")
 
-driver.get("http://www.dermnet.com/dn2/allJPG3/")
+URL = "http://www.dermnet.com/dn2/allJPG3/"
+
+driver.get(URL)
 
 DISEASES = {
     'Psoriasis' : [],
@@ -31,17 +37,28 @@ DISEASES = {
     'Basal' : []
 }
 
-line_data = driver.find_elements_by_tag_name('a')
+DATA_FOLDER = 'disease_data/'
 
 c = 0
+
+async def store_img(url: str, path: str):
+    urllib.request.urlretrieve(url, path)
+
+line_data = driver.find_elements_by_tag_name('a')[c:]
+print("line data done")
+#input("Continue:")
+
+request_stack = []
+
 for line in line_data:
-    print('here')
     for disease in DISEASES.keys():
-        if disease in line.text:
-            DISEASES[disease].append(line)
-            if c == 100:
-                c =0
-                print(line.text)
-            c += 1
+        if disease in line.text or disease.lower() in line.text:
+            async_req = store_img(URL+line.text, DATA_FOLDER + disease + "/" + line.text)
+            request_stack.append(async_req)
+
+    if c % 100 == 0:
+        print(c)
+    c+=1
+
 
 driver.close()
