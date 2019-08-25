@@ -23,12 +23,12 @@ def classifier():
 
     req = request.form or request.json
 
-    img = request.files['image']
+    img = request.files.get("image")
 
-    if not req:
+    if not img:
         return jsonify({
             "status" : "error",
-            "message" : "body not found in request"
+            "message" : "Image not found in request"
         })
 
     tag, confidence = predict(img)
